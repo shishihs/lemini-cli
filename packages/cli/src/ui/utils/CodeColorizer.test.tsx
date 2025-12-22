@@ -15,6 +15,7 @@ describe('colorizeCode', () => {
     const settings = new LoadedSettings(
       { path: '', settings: {}, originalSettings: {} },
       { path: '', settings: {}, originalSettings: {} },
+      {}, // Base settings
       {
         path: '',
         settings: { ui: { useAlternateBuffer: true, showLineNumbers: false } },

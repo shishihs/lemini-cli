@@ -89,6 +89,7 @@ describe('App', () => {
   const mockLoadedSettings = new LoadedSettings(
     mockSettingsFile,
     mockSettingsFile,
+    {} as any, // Base settings
     mockSettingsFile,
     mockSettingsFile,
     true,

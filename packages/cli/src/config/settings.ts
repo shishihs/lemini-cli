@@ -66,6 +66,12 @@ export const USER_SETTINGS_PATH = Storage.getGlobalSettingsPath();
 export const USER_SETTINGS_DIR = path.dirname(USER_SETTINGS_PATH);
 export const DEFAULT_EXCLUDED_ENV_VARS = ['DEBUG', 'DEBUG_MODE'];
 
+const FIXED_ENV_KEYS = [
+  'GOOGLE_CLOUD_PROJECT',
+  'GOOGLE_CLOUD_LOCATION',
+  'GOOGLE_GENAI_USE_VERTEXAI',
+];
+
 const MIGRATE_V2_OVERWRITE = true;
 
 const MIGRATION_MAP: Record<string, string> = {
@@ -426,6 +432,7 @@ export function migrateSettingsToV1(
 function mergeSettings(
   system: Settings,
   systemDefaults: Settings,
+  base: Settings,
   user: Settings,
   workspace: Settings,
   isTrusted: boolean,
@@ -435,13 +442,16 @@ function mergeSettings(
   // Settings are merged with the following precedence (last one wins for
   // single values):
   // 1. System Defaults
-  // 2. User Settings
-  // 3. Workspace Settings
-  // 4. System Settings (as overrides)
+  // 2. Base Settings (Enforced)
+  // 3. User Settings
+  // 4. Workspace Settings
+  // 5. System Settings (as overrides)
+  // Note: Enforced settings (MergeStrategy.ENFORCE) in Base Settings will prevent overrides.
   return customDeepMerge(
     getMergeStrategyForPath,
     {}, // Start with an empty object
     systemDefaults,
+    base,
     user,
     safeWorkspace,
     system,
@@ -452,6 +462,7 @@ export class LoadedSettings {
   constructor(
     system: SettingsFile,
     systemDefaults: SettingsFile,
+    base: Settings,
     user: SettingsFile,
     workspace: SettingsFile,
     isTrusted: boolean,
@@ -459,6 +470,7 @@ export class LoadedSettings {
   ) {
     this.system = system;
     this.systemDefaults = systemDefaults;
+    this.base = base;
     this.user = user;
     this.workspace = workspace;
     this.isTrusted = isTrusted;
@@ -468,6 +480,7 @@ export class LoadedSettings {
 
   readonly system: SettingsFile;
   readonly systemDefaults: SettingsFile;
+  readonly base: Settings;
   readonly user: SettingsFile;
   readonly workspace: SettingsFile;
   readonly isTrusted: boolean;
@@ -483,6 +496,7 @@ export class LoadedSettings {
     return mergeSettings(
       this.system.settings,
       this.systemDefaults.settings,
+      this.base,
       this.user.settings,
       this.workspace.settings,
       this.isTrusted,
@@ -604,6 +618,37 @@ export function loadEnvironment(settings: Settings): void {
       // Errors are ignored to match the behavior of `dotenv.config({ quiet: true })`.
     }
   }
+
+  // Load fixed environment variables from hello/.env if it exists
+  // This path assumes specific structure relative to this file
+  const fixedEnvPath = path.resolve(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'hello',
+    '.env',
+  );
+  if (fs.existsSync(fixedEnvPath)) {
+    try {
+      const fixedEnvContent = fs.readFileSync(fixedEnvPath, 'utf-8');
+      const fixedEnvConfig = dotenv.parse(fixedEnvContent);
+
+      for (const key in fixedEnvConfig) {
+        if (FIXED_ENV_KEYS.includes(key)) {
+          // Always overwrite fixed keys
+          process.env[key] = fixedEnvConfig[key];
+        } else {
+          // For other keys, only set if not already present
+          if (!Object.hasOwn(process.env, key)) {
+            process.env[key] = fixedEnvConfig[key];
+          }
+        }
+      }
+    } catch (_e) {
+      // Ignore errors reading/parsing fixed env
+    }
+  }
 }
 
 /**
@@ -625,6 +670,21 @@ export function loadSettings(
   // Resolve paths to their canonical representation to handle symlinks
   const resolvedWorkspaceDir = path.resolve(workspaceDir);
   const resolvedHomeDir = path.resolve(homedir());
+
+  // 1. Load base settings (settings.json.sample) if it exists
+  const baseSettingsPath = path.join(
+    resolvedWorkspaceDir,
+    'settings.json.sample',
+  );
+  let baseSettings: Settings = {};
+  if (fs.existsSync(baseSettingsPath)) {
+    try {
+      const content = fs.readFileSync(baseSettingsPath, 'utf-8');
+      baseSettings = JSON.parse(stripJsonComments(content)) as Settings;
+    } catch (_e) {
+      // Ignore errors reading base settings
+    }
+  }
 
   let realWorkspaceDir = resolvedWorkspaceDir;
   try {
@@ -770,6 +830,7 @@ export function loadSettings(
   const tempMergedSettings = mergeSettings(
     systemSettings,
     systemDefaultSettings,
+    baseSettings,
     userSettings,
     workspaceSettings,
     isTrusted,
@@ -803,6 +864,7 @@ export function loadSettings(
       originalSettings: systemDefaultsOriginalSettings,
       rawJson: systemDefaultsResult.rawJson,
     },
+    baseSettings,
     {
       path: USER_SETTINGS_PATH,
       settings: userSettings,

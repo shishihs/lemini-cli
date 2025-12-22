@@ -77,6 +77,7 @@ const createMockSettings = (
       originalSettings: {},
       path: '/system/system-defaults.json',
     },
+    {}, // Base settings
     {
       settings: {
         ui: { customThemes: {} },

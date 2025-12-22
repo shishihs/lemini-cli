@@ -191,6 +191,7 @@ Another paragraph.
       const settings = new LoadedSettings(
         { path: '', settings: {}, originalSettings: {} },
         { path: '', settings: {}, originalSettings: {} },
+        {}, // Base settings
         {
           path: '',
           settings: { ui: { showLineNumbers: false } },
