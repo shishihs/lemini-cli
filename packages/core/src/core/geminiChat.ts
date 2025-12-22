@@ -54,6 +54,7 @@ import {
   fireBeforeModelHook,
   fireBeforeToolSelectionHook,
 } from './geminiChatHookTriggers.js';
+import { TokenRateLimiter } from './TokenRateLimiter.js';
 
 export enum StreamEventType {
   /** A regular content chunk from the API. */
@@ -210,6 +211,7 @@ export class GeminiChat {
   private sendPromise: Promise<void> = Promise.resolve();
   private readonly chatRecordingService: ChatRecordingService;
   private lastPromptTokenCount: number;
+  private rateLimiter: TokenRateLimiter;
 
   constructor(
     private readonly config: Config,
@@ -224,6 +226,7 @@ export class GeminiChat {
     this.lastPromptTokenCount = estimateTokenCountSync(
       this.history.flatMap((c) => c.parts || []),
     );
+    this.rateLimiter = new TokenRateLimiter();
   }
 
   setSystemInstruction(sysInstr: string) {
@@ -509,6 +512,17 @@ export class GeminiChat {
       lastModelToUse = modelToUse;
       lastConfig = config;
       lastContentsToUse = contentsToUse;
+
+      // Rate Limiting
+      const { totalTokens } = await this.config
+        .getContentGenerator()
+        .countTokens({
+          model: modelToUse,
+          contents: contentsToUse,
+        });
+      if (totalTokens) {
+        await this.rateLimiter.waitForTurn(totalTokens);
+      }
 
       return this.config.getContentGenerator().generateContentStream(
         {
