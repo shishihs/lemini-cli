@@ -94,6 +94,8 @@ export enum MergeStrategy {
   UNION = 'union',
   // Shallow merge objects.
   SHALLOW_MERGE = 'shallow_merge',
+  // Enforce the value, preventing overrides from lower-precedence sources.
+  ENFORCE = 'enforce',
 }
 
 export interface SettingDefinition {

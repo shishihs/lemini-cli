@@ -41,6 +41,11 @@ function mergeRecursively(
     const objValue = target[key];
     const mergeStrategy = getMergeStrategyForPath(newPath);
 
+    if (mergeStrategy === MergeStrategy.ENFORCE && target[key] !== undefined) {
+      // ENFORCE strategy: Do not override if the target (base) already has a value.
+      continue;
+    }
+
     if (mergeStrategy === MergeStrategy.SHALLOW_MERGE && objValue && srcValue) {
       const obj1 =
         typeof objValue === 'object' && objValue !== null ? objValue : {};
