@@ -193,9 +193,8 @@ describe('runNonInteractive', () => {
       computeMergedSettings: vi.fn(),
     } as unknown as LoadedSettings;
 
-    const { handleAtCommand } = await import(
-      './ui/hooks/atCommandProcessor.js'
-    );
+    const { handleAtCommand } =
+      await import('./ui/hooks/atCommandProcessor.js');
     vi.mocked(handleAtCommand).mockImplementation(async ({ query }) => ({
       processedQuery: [{ text: query }],
     }));
@@ -555,9 +554,8 @@ describe('runNonInteractive', () => {
 
   it('should preprocess @include commands before sending to the model', async () => {
     // 1. Mock the imported atCommandProcessor
-    const { handleAtCommand } = await import(
-      './ui/hooks/atCommandProcessor.js'
-    );
+    const { handleAtCommand } =
+      await import('./ui/hooks/atCommandProcessor.js');
     const mockHandleAtCommand = vi.mocked(handleAtCommand);
 
     // 2. Define the raw input and the expected processed output
@@ -909,9 +907,8 @@ describe('runNonInteractive', () => {
   });
 
   it('should handle slash commands', async () => {
-    const nonInteractiveCliCommands = await import(
-      './nonInteractiveCliCommands.js'
-    );
+    const nonInteractiveCliCommands =
+      await import('./nonInteractiveCliCommands.js');
     const handleSlashCommandSpy = vi.spyOn(
       nonInteractiveCliCommands,
       'handleSlashCommand',
@@ -1184,9 +1181,8 @@ describe('runNonInteractive', () => {
 
   it('should instantiate CommandService with correct loaders for slash commands', async () => {
     // This test indirectly checks that handleSlashCommand is using the right loaders.
-    const { FileCommandLoader } = await import(
-      './services/FileCommandLoader.js'
-    );
+    const { FileCommandLoader } =
+      await import('./services/FileCommandLoader.js');
     const { McpPromptLoader } = await import('./services/McpPromptLoader.js');
 
     mockGetCommands.mockReturnValue([]); // No commands found, so it will fall through
@@ -1445,7 +1441,7 @@ describe('runNonInteractive', () => {
     });
 
     expect(processStderrSpy).toHaveBeenCalledWith(
-      'The --prompt (-p) flag has been deprecated and will be removed in a future version. Please use a positional argument for your prompt. See gemini --help for more information.\n',
+      'The --prompt (-p) flag has been deprecated and will be removed in a future version. Please use a positional argument for your prompt. See lemini --help for more information.\n',
     );
     expect(processStdoutSpy).toHaveBeenCalledWith('Final Answer');
   });
@@ -1472,7 +1468,7 @@ describe('runNonInteractive', () => {
     });
 
     const deprecateText =
-      'The --prompt (-p) flag has been deprecated and will be removed in a future version. Please use a positional argument for your prompt. See gemini --help for more information.\n';
+      'The --prompt (-p) flag has been deprecated and will be removed in a future version. Please use a positional argument for your prompt. See lemini --help for more information.\n';
     expect(processStderrSpy).toHaveBeenCalledWith(deprecateText);
   });
 

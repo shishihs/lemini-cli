@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import { loadEnvironment, loadSettings, Settings } from './settings.js';
-import { MergeStrategy } from './settingsSchema.js';
+import { loadEnvironment, type Settings } from './settings.js';
+// import { MergeStrategy } from './settingsSchema.js';
 
 vi.mock('fs', async () => {
   const actual = await vi.importActual('fs');
@@ -49,13 +49,13 @@ describe('Settings Extensions', () => {
       });
 
       // Pre-set some env vars
-      process.env.GOOGLE_CLOUD_PROJECT = 'original-project';
-      delete process.env.OTHER_VAR;
+      process.env['GOOGLE_CLOUD_PROJECT'] = 'original-project';
+      delete process.env['OTHER_VAR'];
 
       loadEnvironment({} as Settings);
 
-      expect(process.env.GOOGLE_CLOUD_PROJECT).toBe('fixed-project');
-      expect(process.env.OTHER_VAR).toBe('value');
+      expect(process.env['GOOGLE_CLOUD_PROJECT']).toBe('fixed-project');
+      expect(process.env['OTHER_VAR']).toBe('value');
     });
 
     it('should not override non-fixed env vars if already set', () => {
@@ -80,12 +80,12 @@ describe('Settings Extensions', () => {
       });
 
       // Pre-set non-fixed var
-      process.env.OTHER_VAR = 'original-value';
+      process.env['OTHER_VAR'] = 'original-value';
 
       loadEnvironment({} as Settings);
 
-      expect(process.env.GOOGLE_CLOUD_PROJECT).toBe('fixed-project'); // Fixed, so overridden
-      expect(process.env.OTHER_VAR).toBe('original-value'); // Not fixed, so kept original
+      expect(process.env['GOOGLE_CLOUD_PROJECT']).toBe('fixed-project'); // Fixed, so overridden
+      expect(process.env['OTHER_VAR']).toBe('original-value'); // Not fixed, so kept original
     });
   });
 
@@ -111,8 +111,6 @@ describe('Settings Extensions', () => {
           },
         },
       };
-
-      const samplePath = path.join(mockCwd, 'settings.json.sample');
 
       vi.mocked(fs.existsSync).mockImplementation((p) => {
         // Check if path ends with settings.json.sample
@@ -154,7 +152,7 @@ describe('Settings Extensions', () => {
       const { customDeepMerge } = await import('../utils/deepMerge.js');
       const { MergeStrategy } = await import('./settingsSchema.js');
 
-      const strategy = (path) => {
+      const strategy = (path: string[]) => {
         if (path[0] === 'enforcedKey') return MergeStrategy.ENFORCE;
         return undefined;
       };
@@ -165,7 +163,7 @@ describe('Settings Extensions', () => {
         normalKey: 'overrideNormal',
       };
 
-      const result = customDeepMerge(strategy, {}, base, override);
+      const result = customDeepMerge(strategy, {}, base, override) as any;
 
       expect(result.enforcedKey).toBe('baseValue');
       expect(result.normalKey).toBe('overrideNormal');

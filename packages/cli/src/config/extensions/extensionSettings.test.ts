@@ -216,7 +216,7 @@ describe('extensionSettings', () => {
         SENSITIVE_VAR: 'secret',
       };
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `Lemini CLI Extensions test-ext 12345`,
       );
       await userKeychain.setSecret('SENSITIVE_VAR', 'secret');
       const envPath = path.join(extensionDir, '.env');

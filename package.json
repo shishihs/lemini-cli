@@ -1,5 +1,5 @@
 {
-  "name": "@google/gemini-cli",
+  "name": "@shishihs/lemini-cli-monorepo",
   "version": "0.21.0-nightly.20251220.41a1a3eed",
   "engines": {
     "node": ">=20.0.0"
@@ -69,7 +69,7 @@
     }
   },
   "bin": {
-    "gemini": "bundle/gemini.js"
+    "lemini": "bundle/lemini.js"
   },
   "files": [
     "bundle/",
