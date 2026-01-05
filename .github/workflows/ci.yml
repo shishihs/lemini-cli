@@ -152,7 +152,7 @@ jobs:
         run: 'npm run bundle'
 
       - name: 'Smoke test bundle'
-        run: 'node ./bundle/gemini.js --version'
+        run: 'node ./bundle/lemini.js --version'
 
       - name: 'Wait for file system sync'
         run: 'sleep 2'
@@ -220,7 +220,7 @@ jobs:
         run: 'npm run bundle'
 
       - name: 'Smoke test bundle'
-        run: 'node ./bundle/gemini.js --version'
+        run: 'node ./bundle/lemini.js --version'
 
       - name: 'Wait for file system sync'
         run: 'sleep 2'
@@ -363,7 +363,7 @@ jobs:
         shell: 'pwsh'
 
       - name: 'Smoke test bundle'
-        run: 'node ./bundle/gemini.js --version'
+        run: 'node ./bundle/lemini.js --version'
         shell: 'pwsh'
 
   ci:
