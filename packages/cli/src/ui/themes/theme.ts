@@ -111,7 +111,7 @@ export const darkTheme: ColorsTheme = {
   AccentBlue: '#89B4FA',
   AccentPurple: '#CBA6F7',
   AccentCyan: '#89DCEB',
-  AccentGreen: '#A6E3A1',
+  AccentGreen: '#8FB130',
   AccentYellow: '#F9E2AF',
   AccentRed: '#F38BA8',
   DiffAdded: '#28350B',
@@ -119,7 +119,7 @@ export const darkTheme: ColorsTheme = {
   Comment: '#6C7086',
   Gray: '#6C7086',
   DarkGray: interpolateColor('#6C7086', '#1E1E2E', 0.5),
-  GradientColors: ['#4796E4', '#847ACE', '#C3677F'],
+  GradientColors: ['#8FB130', '#FFFFFF'],
 };
 
 export const ansiTheme: ColorsTheme = {

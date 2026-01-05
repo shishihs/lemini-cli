@@ -146,4 +146,35 @@ export const DefaultDark: Theme = new Theme(
     },
   },
   darkTheme,
+  {
+    text: {
+      primary: darkTheme.Foreground,
+      secondary: darkTheme.Gray,
+      link: darkTheme.AccentBlue,
+      accent: darkTheme.AccentPurple,
+      response: darkTheme.Foreground,
+    },
+    background: {
+      primary: darkTheme.Background,
+      diff: {
+        added: darkTheme.DiffAdded,
+        removed: darkTheme.DiffRemoved,
+      },
+    },
+    border: {
+      default: darkTheme.AccentGreen, // Lifenet Brand Color
+      focused: darkTheme.AccentBlue,
+    },
+    ui: {
+      comment: darkTheme.Comment,
+      symbol: darkTheme.AccentCyan,
+      dark: darkTheme.DarkGray,
+      gradient: darkTheme.GradientColors,
+    },
+    status: {
+      error: darkTheme.AccentRed,
+      success: darkTheme.AccentGreen,
+      warning: darkTheme.AccentYellow,
+    },
+  },
 );
