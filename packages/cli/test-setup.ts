@@ -14,7 +14,7 @@ if (process.env.NO_COLOR !== undefined) {
   delete process.env.NO_COLOR;
 }
 
-import './src/test-utils/customMatchers.js';
+import './src/test-utils/customMatchers.ts';
 
 let consoleErrorSpy: vi.SpyInstance;
 let actWarnings: Array<{ message: string; stack: string }> = [];
