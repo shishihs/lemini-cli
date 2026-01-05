@@ -67,7 +67,8 @@ const userAccountManager = new UserAccountManager();
 
 //  OAuth Client ID used to initiate OAuth2Client class.
 const OAUTH_CLIENT_ID =
-  '681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com';
+  '681255809395-' +
+  'oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com';
 
 // OAuth Secret value used to initiate OAuth2Client class.
 // Note: It's ok to save this in git because this is an installed application
