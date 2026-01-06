@@ -241,9 +241,59 @@ describe('Policy Engine Integration Tests', () => {
       );
       const engine = new PolicyEngine(config);
 
-      // Most tools should be allowed in YOLO mode
+      // Safe investigation commands should be allowed
       expect(
-        (await engine.check({ name: 'run_shell_command' }, undefined)).decision,
+        (
+          await engine.check(
+            { name: 'run_shell_command', args: { command: 'ls -R' } },
+            undefined,
+          )
+        ).decision,
+      ).toBe(PolicyDecision.ALLOW);
+      expect(
+        (
+          await engine.check(
+            { name: 'run_shell_command', args: { command: 'git status' } },
+            undefined,
+          )
+        ).decision,
+      ).toBe(PolicyDecision.ALLOW);
+      expect(
+        (
+          await engine.check(
+            { name: 'run_shell_command', args: { command: 'pwd' } },
+            undefined,
+          )
+        ).decision,
+      ).toBe(PolicyDecision.ALLOW);
+      expect(
+        (
+          await engine.check(
+            { name: 'run_shell_command', args: { command: 'tail -f log.txt' } },
+            undefined,
+          )
+        ).decision,
+      ).toBe(PolicyDecision.ALLOW);
+
+      // Unsafe shell commands should be denied (even in YOLO)
+      expect(
+        (
+          await engine.check(
+            { name: 'run_shell_command', args: { command: 'rm -rf /' } },
+            undefined,
+          )
+        ).decision,
+      ).toBe(PolicyDecision.DENY);
+      expect(
+        (
+          await engine.check(
+            {
+              name: 'run_shell_command',
+              args: { command: 'echo "bad" > file' },
+            },
+            undefined,
+          )
+        ).decision,
       ).toBe(PolicyDecision.DENY);
       expect(
         (await engine.check({ name: 'write_file' }, undefined)).decision,

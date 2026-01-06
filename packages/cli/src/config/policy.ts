@@ -47,6 +47,12 @@ export async function createPolicyEngineConfig(
 
   // Enforce read-only for YOLO mode
   if (approvalMode === ApprovalMode.YOLO) {
+    // Whitelist for safe investigation commands
+    // Matches {"command":"(git|ls|grep|cat|find|npm|node)..."}
+    // Note: We use a regex that matches the stringified JSON argument structure.
+    const safeYoloPattern =
+      /^{\s*"command"\s*:\s*"(?:git|ls|grep|rg|cat|find|npm\s+(?:run\s+)?test|node|pwd|whoami|head|tail|wc|diff|du|df|env|printenv|stat|ps|date)\b/;
+
     const yoloRestrictions: PolicyRule[] = [
       { toolName: 'write_file', decision: PolicyDecision.DENY, priority: 2000 },
       { toolName: 'replace', decision: PolicyDecision.DENY, priority: 2000 },
@@ -55,6 +61,14 @@ export async function createPolicyEngineConfig(
         decision: PolicyDecision.DENY,
         priority: 2000,
       },
+      // ALLOW safe investigation commands
+      {
+        toolName: 'run_shell_command',
+        argsPattern: safeYoloPattern,
+        decision: PolicyDecision.ALLOW,
+        priority: 2001,
+      },
+      // DENY all other shell commands
       {
         toolName: 'run_shell_command',
         decision: PolicyDecision.DENY,
