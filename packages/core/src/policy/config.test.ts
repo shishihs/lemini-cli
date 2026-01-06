@@ -420,9 +420,8 @@ describe('createPolicyEngineConfig', () => {
       readFile: mockReadFile,
     }));
     vi.resetModules();
-    const { createPolicyEngineConfig: createConfig } = await import(
-      './config.js'
-    );
+    const { createPolicyEngineConfig: createConfig } =
+      await import('./config.js');
 
     const config = await createConfig(
       settings,
@@ -503,9 +502,8 @@ describe('createPolicyEngineConfig', () => {
   it('should have YOLO allow-all rule beat write tool rules in YOLO mode', async () => {
     vi.resetModules();
     vi.doUnmock('node:fs/promises');
-    const { createPolicyEngineConfig: createConfig } = await import(
-      './config.js'
-    );
+    const { createPolicyEngineConfig: createConfig } =
+      await import('./config.js');
     // Re-mock Storage after resetModules because it was reloaded
     const { Storage: FreshStorage } = await import('../config/storage.js');
     vi.spyOn(FreshStorage, 'getUserPoliciesDir').mockReturnValue(
@@ -833,9 +831,8 @@ name = "invalid-name"
   it('should have default ASK_USER rule for discovered tools', async () => {
     vi.resetModules();
     vi.doUnmock('node:fs/promises');
-    const { createPolicyEngineConfig: createConfig } = await import(
-      './config.js'
-    );
+    const { createPolicyEngineConfig: createConfig } =
+      await import('./config.js');
     // Re-mock Storage after resetModules because it was reloaded
     const { Storage: FreshStorage } = await import('../config/storage.js');
     vi.spyOn(FreshStorage, 'getUserPoliciesDir').mockReturnValue(

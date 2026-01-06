@@ -1,1 +1,0 @@
-/Users/shishi/Workspace/gemini-cli/CONTRIBUTING.md

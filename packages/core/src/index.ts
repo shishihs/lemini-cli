@@ -13,7 +13,7 @@ export * from './output/json-formatter.js';
 export * from './output/stream-json-formatter.js';
 export * from './policy/types.js';
 export * from './policy/policy-engine.js';
-export * from './policy/toml-loader.js';
+export * from './policy/policy-loader.js';
 export * from './policy/config.js';
 export * from './confirmation-bus/types.js';
 export * from './confirmation-bus/message-bus.js';
