@@ -1,6 +1,12 @@
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { loadEnvironment, type Settings } from './settings.js';
 // import { MergeStrategy } from './settingsSchema.js';
 
@@ -39,9 +45,7 @@ describe('Settings Extensions', () => {
       const fixedEnvContent =
         'GOOGLE_CLOUD_PROJECT=fixed-project\nOTHER_VAR=value';
 
-      vi.mocked(fs.existsSync).mockImplementation((p) => {
-        return p === fixedEnvPath;
-      });
+      vi.mocked(fs.existsSync).mockImplementation((p) => p === fixedEnvPath);
 
       vi.mocked(fs.readFileSync).mockImplementation((p) => {
         if (p === fixedEnvPath) return fixedEnvContent;
@@ -70,9 +74,7 @@ describe('Settings Extensions', () => {
       const fixedEnvContent =
         'GOOGLE_CLOUD_PROJECT=fixed-project\nOTHER_VAR=value';
 
-      vi.mocked(fs.existsSync).mockImplementation((p) => {
-        return p === fixedEnvPath;
-      });
+      vi.mocked(fs.existsSync).mockImplementation((p) => p === fixedEnvPath);
 
       vi.mocked(fs.readFileSync).mockImplementation((p) => {
         if (p === fixedEnvPath) return fixedEnvContent;
@@ -112,10 +114,11 @@ describe('Settings Extensions', () => {
         },
       };
 
-      vi.mocked(fs.existsSync).mockImplementation((p) => {
-        // Check if path ends with settings.json.sample
-        return typeof p === 'string' && p.endsWith('settings.json.sample');
-      });
+      vi.mocked(fs.existsSync).mockImplementation(
+        (p) =>
+          // Check if path ends with settings.json.sample
+          typeof p === 'string' && p.endsWith('settings.json.sample'),
+      );
 
       vi.mocked(fs.readFileSync).mockImplementation((p) => {
         if (typeof p === 'string' && p.endsWith('settings.json.sample')) {

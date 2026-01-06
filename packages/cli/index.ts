@@ -6,6 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { main } from './src/gemini.js';
 import { FatalError, writeToStderr } from '@google/gemini-cli-core';
 import { runExitCleanup } from './src/utils/cleanup.js';
@@ -24,7 +26,7 @@ process.emit = function (name: any, data: any, ...args: any[]) {
   ) {
     return false;
   }
-  return originalEmit.apply(process, [name, data, ...args]);
+  return (originalEmit as any).apply(process, [name, data, ...args]);
 } as any;
 
 main().catch(async (error) => {

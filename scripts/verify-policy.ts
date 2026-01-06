@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { createPolicyEngineConfig } from '../packages/cli/src/config/policy.js';
 import { PolicyEngine } from '../packages/core/src/policy/policy-engine.js';
 import { ApprovalMode } from '../packages/core/src/policy/types.js';

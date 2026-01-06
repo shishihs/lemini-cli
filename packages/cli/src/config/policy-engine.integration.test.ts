@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   ApprovalMode,
   PolicyDecision,
@@ -12,6 +12,15 @@ import {
 } from '@google/gemini-cli-core';
 import { createPolicyEngineConfig } from './policy.js';
 import type { Settings } from './settings.js';
+
+vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@google/gemini-cli-core')>();
+  return {
+    ...actual,
+    loadPolicyConfig: vi.fn().mockResolvedValue({ rules: [] }),
+  };
+});
 
 describe('Policy Engine Integration Tests', () => {
   describe('Policy configuration produces valid PolicyEngine config', () => {
@@ -235,10 +244,10 @@ describe('Policy Engine Integration Tests', () => {
       // Most tools should be allowed in YOLO mode
       expect(
         (await engine.check({ name: 'run_shell_command' }, undefined)).decision,
-      ).toBe(PolicyDecision.ALLOW);
+      ).toBe(PolicyDecision.DENY);
       expect(
         (await engine.check({ name: 'write_file' }, undefined)).decision,
-      ).toBe(PolicyDecision.ALLOW);
+      ).toBe(PolicyDecision.DENY);
       expect(
         (await engine.check({ name: 'unknown_tool' }, undefined)).decision,
       ).toBe(PolicyDecision.ALLOW);

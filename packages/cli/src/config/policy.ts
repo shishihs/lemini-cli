@@ -40,7 +40,7 @@ export async function createPolicyEngineConfig(
   const policyPath = path.join(os.homedir(), '.gemini', 'policy.toml');
   const persistentConfig = await loadPolicyConfig(policyPath);
 
-  let params = {
+  const params = {
     ...coreConfig,
     rules: [...(coreConfig.rules ?? []), ...(persistentConfig.rules ?? [])],
   };
