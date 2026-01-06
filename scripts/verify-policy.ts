@@ -1,7 +1,6 @@
 import { createPolicyEngineConfig } from '../packages/cli/src/config/policy.js';
 import { PolicyEngine } from '../packages/core/src/policy/policy-engine.js';
 import { ApprovalMode } from '../packages/core/src/policy/types.js';
-import { PolicyDecision } from '../packages/core/src/policy/types.js';
 
 // Mock settings
 const mockSettings = {
@@ -12,7 +11,7 @@ const mockSettings = {
 
 async function verify() {
   console.log('--- DEFAULT MODE VERIFICATION ---');
-  // @ts-ignore
+  // @ts-expect-error - Mocking settings for test
   const config = await createPolicyEngineConfig(
     mockSettings,
     ApprovalMode.REQUIRE_APPROVAL,
@@ -115,7 +114,7 @@ async function verify() {
   );
 
   console.log('\n--- YOLO MODE VERIFICATION (Should block writes/shell) ---');
-  // @ts-ignore
+  // @ts-expect-error - Testing YOLO mode
   const yoloConfig = await createPolicyEngineConfig(
     mockSettings,
     ApprovalMode.YOLO,
